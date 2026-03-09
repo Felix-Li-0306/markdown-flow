@@ -11,10 +11,39 @@ struct EditorView: View {
     @Binding var document: MarkdownDocument
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 16) {
+        VStack(alignment: .leading, spacing: 12) {
             TextField("Document Title", text: $document.title)
                 .textFieldStyle(.roundedBorder)
                 .font(.title3)
+
+            ScrollView(.horizontal, showsIndicators: false) {
+                HStack(spacing: 10) {
+                    toolbarButton("# ") {
+                        insert("# ")
+                    }
+
+                    toolbarButton("- ") {
+                        insert("- ")
+                    }
+
+                    toolbarButton("**B**") {
+                        insert("**bold**")
+                    }
+
+                    toolbarButton("`code`") {
+                        insert("`code`")
+                    }
+
+                    toolbarButton("$x$") {
+                        insert("$x$")
+                    }
+
+                    toolbarButton("$$") {
+                        insert("$$\n\n$$")
+                    }
+                }
+                .padding(.horizontal, 2)
+            }
 
             Text("Markdown Source")
                 .font(.headline)
@@ -46,6 +75,27 @@ struct EditorView: View {
         }
         .onChange(of: document.content) { _, _ in
             document.updatedAt = Date()
+        }
+    }
+
+    @ViewBuilder
+    private func toolbarButton(_ label: String, action: @escaping () -> Void) -> some View {
+        Button(action: action) {
+            Text(label)
+                .font(.subheadline.monospaced())
+                .padding(.horizontal, 10)
+                .padding(.vertical, 6)
+                .background(Color.gray.opacity(0.12))
+                .clipShape(RoundedRectangle(cornerRadius: 8))
+        }
+        .buttonStyle(.plain)
+    }
+
+    private func insert(_ text: String) {
+        if document.content.isEmpty {
+            document.content = text
+        } else {
+            document.content += "\n" + text
         }
     }
 }

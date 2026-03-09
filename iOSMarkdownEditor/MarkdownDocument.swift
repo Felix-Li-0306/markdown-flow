@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct MarkdownDocument: Identifiable {
+struct MarkdownDocument: Identifiable, Codable, Equatable {
     let id: UUID
     var title: String
     var content: String

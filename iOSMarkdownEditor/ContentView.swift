@@ -8,29 +8,7 @@
 import SwiftUI
 
 struct ContentView: View {
-    @State private var documents: [MarkdownDocument] = [
-        MarkdownDocument(
-            id: UUID(),
-            title: "Welcome.md",
-            content: "# Welcome",
-            createdAt: Date(),
-            updatedAt: Date()
-        ),
-        MarkdownDocument(
-            id: UUID(),
-            title: "Notes.md",
-            content: "## Notes",
-            createdAt: Date(),
-            updatedAt: Date()
-        ),
-        MarkdownDocument(
-            id: UUID(),
-            title: "Draft.md",
-            content: "Draft content",
-            createdAt: Date(),
-            updatedAt: Date()
-        )
-    ]
+    @State private var documents: [MarkdownDocument] = []
 
     var body: some View {
         NavigationStack {
@@ -39,7 +17,7 @@ struct ContentView: View {
                     ForEach($documents) { $document in
                         NavigationLink(destination: EditorView(document: $document)) {
                             VStack(alignment: .leading, spacing: 4) {
-                                Text(document.title)
+                                Text(document.title.isEmpty ? "Untitled" : document.title)
                                     .font(.body)
 
                                 Text(document.updatedAt, style: .date)
@@ -65,6 +43,44 @@ struct ContentView: View {
                     }
                 }
             }
+        }
+        .onAppear {
+            loadDocuments()
+        }
+        .onChange(of: documents) { _, newValue in
+            DocumentStore.saveDocuments(newValue)
+        }
+    }
+
+    private func loadDocuments() {
+        let savedDocuments = DocumentStore.loadDocuments()
+
+        if savedDocuments.isEmpty {
+            documents = [
+                MarkdownDocument(
+                    id: UUID(),
+                    title: "Welcome.md",
+                    content: "# Welcome",
+                    createdAt: Date(),
+                    updatedAt: Date()
+                ),
+                MarkdownDocument(
+                    id: UUID(),
+                    title: "Notes.md",
+                    content: "## Notes",
+                    createdAt: Date(),
+                    updatedAt: Date()
+                ),
+                MarkdownDocument(
+                    id: UUID(),
+                    title: "Draft.md",
+                    content: "Draft content",
+                    createdAt: Date(),
+                    updatedAt: Date()
+                )
+            ]
+        } else {
+            documents = savedDocuments
         }
     }
 
