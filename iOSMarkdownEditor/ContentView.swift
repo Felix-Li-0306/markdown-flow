@@ -10,23 +10,29 @@ import SwiftUI
 struct ContentView: View {
     @State private var documents: [MarkdownDocument] = []
 
+    private var sortedDocuments: [MarkdownDocument] {
+        documents.sorted { $0.updatedAt > $1.updatedAt }
+    }
+
     var body: some View {
         NavigationStack {
             List {
                 Section("Documents") {
-                    ForEach($documents) { $document in
-                        NavigationLink(destination: EditorView(document: $document)) {
-                            VStack(alignment: .leading, spacing: 4) {
-                                Text(document.title.isEmpty ? "Untitled" : document.title)
-                                    .font(.body)
+                    ForEach(sortedDocuments) { document in
+                        if let index = documents.firstIndex(where: { $0.id == document.id }) {
+                            NavigationLink(destination: EditorView(document: $documents[index])) {
+                                VStack(alignment: .leading, spacing: 4) {
+                                    Text(documents[index].title.isEmpty ? "Untitled" : documents[index].title)
+                                        .font(.body)
 
-                                Text(document.updatedAt, style: .date)
-                                    .font(.caption)
-                                    .foregroundStyle(.secondary)
+                                    Text(documents[index].updatedAt, style: .date)
+                                        .font(.caption)
+                                        .foregroundStyle(.secondary)
+                                }
                             }
                         }
                     }
-                    .onDelete(perform: deleteDocument)
+                    .onDelete(perform: deleteDocumentFromSortedList)
                 }
             }
             .navigationTitle("Markdown Documents")
@@ -87,16 +93,17 @@ struct ContentView: View {
     private func createDocument() {
         let newDocument = MarkdownDocument(
             id: UUID(),
-            title: "Untitled-\(documents.count + 1).md",
+            title: "Untitled-\(documents.count + 1)",
             content: "",
             createdAt: Date(),
             updatedAt: Date()
         )
-        documents.insert(newDocument, at: 0)
+        documents.append(newDocument)
     }
 
-    private func deleteDocument(at offsets: IndexSet) {
-        documents.remove(atOffsets: offsets)
+    private func deleteDocumentFromSortedList(at offsets: IndexSet) {
+        let documentsToDelete = offsets.map { sortedDocuments[$0].id }
+        documents.removeAll { documentsToDelete.contains($0.id) }
     }
 }
 
