@@ -1,13 +1,13 @@
-# iOS Markdown Editor
+# Markdown Flow
 
 A lightweight iOS Markdown editor with separate source and preview modes.
 
 ## Overview
 
-iOS Markdown Editor is a mobile-first Markdown writing app built for iPhone.  
-It focuses on a simple editing experience, rendered preview, and support for basic Markdown plus LaTeX math.
+Markdown Flow is a mobile-first Markdown writing app built for iPhone.  
+It focuses on a simple local editing experience, rendered preview, and support for basic Markdown plus LaTeX math.
 
-This project started as an open-source learning project and has now reached a usable v1 state.
+The original goal was simple: build a lightweight Markdown editor/reader that works locally on iPhone without depending on heavy workflows.
 
 ## Features
 
