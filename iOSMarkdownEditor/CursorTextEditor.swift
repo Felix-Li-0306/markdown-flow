@@ -49,12 +49,21 @@ struct CursorTextEditor: UIViewRepresentable {
         }
 
         func textViewDidChange(_ textView: UITextView) {
-            text = textView.text
-            selectedRange = textView.selectedRange
+            let newText = textView.text ?? ""
+            let newSelectedRange = textView.selectedRange
+
+            DispatchQueue.main.async {
+                self.text = newText
+                self.selectedRange = newSelectedRange
+            }
         }
 
         func textViewDidChangeSelection(_ textView: UITextView) {
-            selectedRange = textView.selectedRange
+            let newSelectedRange = textView.selectedRange
+
+            DispatchQueue.main.async {
+                self.selectedRange = newSelectedRange
+            }
         }
     }
 }
