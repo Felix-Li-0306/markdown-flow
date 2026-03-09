@@ -35,6 +35,13 @@ struct EditorView: View {
         .padding()
         .navigationTitle("Editor")
         .navigationBarTitleDisplayMode(.inline)
+        .toolbar {
+            ToolbarItem(placement: .topBarTrailing) {
+                NavigationLink(destination: PreviewView(title: document.title, content: content)) {
+                    Text("Preview")
+                }
+            }
+        }
     }
 }
 
