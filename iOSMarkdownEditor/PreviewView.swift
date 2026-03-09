@@ -11,9 +11,14 @@ struct PreviewView: View {
     let title: String
     let content: String
 
+    private var displayTitle: String {
+        let trimmed = title.trimmingCharacters(in: .whitespacesAndNewlines)
+        return trimmed.isEmpty ? "Untitled" : trimmed
+    }
+
     var body: some View {
         MarkdownWebView(
-            html: MarkdownRenderer.makeHTML(title: title, markdown: content)
+            html: MarkdownRenderer.makeHTML(title: displayTitle, markdown: content)
         )
         .navigationTitle("Preview")
         .navigationBarTitleDisplayMode(.inline)
@@ -22,30 +27,15 @@ struct PreviewView: View {
 
 #Preview {
     PreviewView(
-        title: "Welcome.md",
+        title: "Welcome",
         content: """
         # Welcome
 
         This is **bold** text, and this is *italic* text.
 
-        Here is inline code: `print("Hello")`
-
-        > This is a quote.
-
-        - Item one
-        - Item two
-
-        1. First
-        2. Second
-
         Inline math: $E=mc^2$
 
         $$\\int_0^1 x^2 \\, dx = \\frac{1}{3}$$
-
-        ```swift
-        let message = "Hello, Markdown"
-        print(message)
-        ```
         """
     )
 }

@@ -12,7 +12,7 @@ struct EditorView: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
-            TextField("Document Title", text: $document.title)
+            TextField("Untitled", text: $document.title)
                 .textFieldStyle(.roundedBorder)
                 .font(.title3)
 

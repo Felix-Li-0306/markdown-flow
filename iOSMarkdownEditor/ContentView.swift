@@ -26,7 +26,7 @@ struct ContentView: View {
                                 if let index = documents.firstIndex(where: { $0.id == document.id }) {
                                     NavigationLink(destination: EditorView(document: $documents[index])) {
                                         VStack(alignment: .leading, spacing: 4) {
-                                            Text(documents[index].title.isEmpty ? "Untitled" : documents[index].title)
+                                            Text(displayTitle(for: documents[index]))
                                                 .font(.body)
 
                                             Text(documents[index].updatedAt, style: .date)
@@ -126,11 +126,33 @@ struct ContentView: View {
             documents = savedDocuments
         }
     }
+    
+    private func displayTitle(for document: MarkdownDocument) -> String {
+        let trimmed = document.title.trimmingCharacters(in: .whitespacesAndNewlines)
+        return trimmed.isEmpty ? "Untitled" : trimmed
+    }
 
+    private func makeUntitledName() -> String {
+        let existingTitles = Set(
+            documents.map { $0.title.trimmingCharacters(in: .whitespacesAndNewlines) }
+        )
+
+        if !existingTitles.contains("Untitled") {
+            return "Untitled"
+        }
+
+        var index = 2
+        while existingTitles.contains("Untitled \(index)") {
+            index += 1
+        }
+
+        return "Untitled \(index)"
+    }
+    
     private func createDocument() {
         let newDocument = MarkdownDocument(
             id: UUID(),
-            title: "Untitled-\(documents.count + 1)",
+            title: makeUntitledName(),
             content: "",
             createdAt: Date(),
             updatedAt: Date()
